@@ -1,0 +1,17 @@
+# BASE
+base:
+  random_state: 42
+  test_size: 0.2
+  root_project_dir: D:\HereAgain\CALOIRO 2025\Programming\LAB_MAI_01
+
+# DATA
+data:
+  raw_dataset_csv: Data/test_scores.csv
+
+
+# REPORTS
+reports:
+  ydata_report_path: Reports/ydata_report1.html
+  dvclive_path: dvclive/
+  metrics_path: Reports/metrics/
+  figures_path: Reports/figures/
