@@ -7,6 +7,10 @@ base:
 # DATA
 data:
   raw_dataset_csv: Data/test_scores.csv
+  features_path: Data/Features/features.csv
+
+  dataset_x_path_np: data/Processed/data_x.npy
+  dataset_y_path_np: data/Processed/data_y.npy
 
 
 # REPORTS
