@@ -6,11 +6,16 @@ base:
 
 # DATA
 data:
-  raw_dataset_csv: Data/test_scores.csv
+  raw_dataset_csv: Data/Raw/test_scores.csv
   features_path: Data/Features/features.csv
 
-  dataset_x_path_np: data/Processed/data_x.npy
-  dataset_y_path_np: data/Processed/data_y.npy
+  processed_dataset_csv: Data/Processed/test_scores_processed.csv
+  dataset_x_path_np: Data/Processed/data_x.npy
+  dataset_y_path_np: Data/Processed/data_y.npy
+
+  train_path: Data/Processed/train.csv
+  test_path: Data/Processed/test.csv
+  target_column: posttest
 
 
 # REPORTS
@@ -19,3 +24,47 @@ reports:
   dvclive_path: dvclive/
   metrics_path: Reports/metrics/
   figures_path: Reports/figures/
+
+# MODELS  
+models:
+  models_path: models/
+
+  linear:
+    n_jobs:
+
+  decision_tree:
+    criterion: squared_error
+    max_depth: 10
+    min_samples_split: 2
+    min_samples_leaf: 3
+    random_state: 42
+
+  xgboost:
+    n_estimators: 200
+    learning_rate: 0.05
+    max_depth: 10
+    subsample: 0.8
+    colsample_bytree: 0.75
+    random_state: 42
+
+  catboost:
+    iterations: 300
+    depth: 4
+    learning_rate: 0.05
+    loss_function: RMSE
+    verbose: false
+    random_seed: 42
+
+  ann:
+    dataset_params:
+      validation_split: 0.2
+      batch_size: 16
+      random_state: 42
+    model_params:
+      n_hidden_layers: 4
+      n_neurons: 32
+      activation: tanh
+      learning_rate: 0.001
+    train_params:
+      epochs: 100
+      verbose: 0
