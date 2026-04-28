@@ -1,0 +1,38 @@
+stages:
+  Prepare:
+    cmd: ' '
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - data/raw/test_scores.csv
+    - src/prepare.py
+    outs:
+    - data/processed/data.csv
+  train_linear:
+    cmd: python src/train_linear.py
+    deps:
+    - data/processed/data.csv
+    - src/train_linear.py
+    outs:
+    - models/linear.pkl
+  train_tree:
+    cmd: python src/train_tree.py
+    deps:
+    - data/processed/data.csv
+    - src/train_tree.py
+    outs:
+    - models/tree.pkl
+  train_ann:
+    cmd: python src/train_ann.py
+    deps:
+    - data/processed/data.csv
+    - src/train_ann.py
+    outs:
+    - models/ann.keras
+  train_xgboost:
+    cmd: python src/train_xgboost.py
+    deps:
+    - data/processed/data.csv
+    - src/train_xgboost.py
+    outs:
+    - models/xgboost.pkl
