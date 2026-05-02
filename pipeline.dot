@@ -1,0 +1,29 @@
+strict digraph {
+"preprocess";
+"train_linear";
+"train_decision_tree";
+"train_catboost";
+"train_xgboost";
+"train_ann";
+"test_linear";
+"test_decision_tree";
+"test_catboost";
+"test_xgboost";
+"test_ann";
+"preprocess" -> "train_linear";
+"preprocess" -> "train_decision_tree";
+"preprocess" -> "train_catboost";
+"preprocess" -> "train_xgboost";
+"preprocess" -> "train_ann";
+"preprocess" -> "test_linear";
+"preprocess" -> "test_decision_tree";
+"preprocess" -> "test_catboost";
+"preprocess" -> "test_xgboost";
+"preprocess" -> "test_ann";
+"train_linear" -> "test_linear";
+"train_decision_tree" -> "test_decision_tree";
+"train_catboost" -> "test_catboost";
+"train_xgboost" -> "test_xgboost";
+"train_ann" -> "test_ann";
+}
+

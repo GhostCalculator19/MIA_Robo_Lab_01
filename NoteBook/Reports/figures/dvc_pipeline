@@ -1,0 +1,29 @@
+strict digraph {
+"..\dvc.yaml:preprocess";
+"..\dvc.yaml:train_linear";
+"..\dvc.yaml:train_decision_tree";
+"..\dvc.yaml:train_catboost";
+"..\dvc.yaml:train_xgboost";
+"..\dvc.yaml:train_ann";
+"..\dvc.yaml:test_linear";
+"..\dvc.yaml:test_decision_tree";
+"..\dvc.yaml:test_catboost";
+"..\dvc.yaml:test_xgboost";
+"..\dvc.yaml:test_ann";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:train_linear";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:train_decision_tree";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:train_catboost";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:train_xgboost";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:train_ann";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:test_linear";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:test_decision_tree";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:test_catboost";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:test_xgboost";
+"..\dvc.yaml:preprocess" -> "..\dvc.yaml:test_ann";
+"..\dvc.yaml:train_linear" -> "..\dvc.yaml:test_linear";
+"..\dvc.yaml:train_decision_tree" -> "..\dvc.yaml:test_decision_tree";
+"..\dvc.yaml:train_catboost" -> "..\dvc.yaml:test_catboost";
+"..\dvc.yaml:train_xgboost" -> "..\dvc.yaml:test_xgboost";
+"..\dvc.yaml:train_ann" -> "..\dvc.yaml:test_ann";
+}
+
