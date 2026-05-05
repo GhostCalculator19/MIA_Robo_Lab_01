@@ -165,7 +165,8 @@ stages:
 ![Alt text](/Reports/figures/ann_loss_curve.png)
 
 Ниже представлена архитектура нейронной сети из TensorBoard
-![Alt text](/Reports/figures/ann_model_graph.png)
+
+<img src="/Reports/figures/ann_model_graph.png" alt="Alt text" width="500">
 
 
 # **6. Сравнительная таблица метрик качества моделей**
