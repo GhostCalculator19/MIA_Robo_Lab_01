@@ -44,6 +44,34 @@ def main() -> None:
     os.makedirs(config["models"]["models_path"], exist_ok=True)
     model.save_model(config["models"]["models_path"] + "catboost.cbm")
 
+    # Predict (в лог-пространстве)
+    y_pred_log = model.predict(x_train)
+
+    # Возвращаем в исходное пространство
+    y_pred = np.expm1(y_pred_log)
+    y_true = y_train  # уже в оригинальном масштабе
+
+    # Метрики
+    rmse = root_mean_squared_error(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+
+    print(f"RMSE: {rmse}")
+    print(f"MAE: {mae}")
+    print(f"R2: {r2}")
+    
+    metrics = {
+    "train": {
+        "rmse": float(rmse),
+        "mae": float(mae),
+        "r2": float(r2)
+        }
+    }
+
+    os.makedirs("dvclive/catboost", exist_ok=True)
+
+    with open("dvclive/catboost/metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
 
 def load_data(
     train_path: str,
@@ -58,6 +86,8 @@ def load_data(
     y_train = train_df[target_column]
 
     return x_train, y_train
+
+    
 
 
 if __name__ == "__main__":

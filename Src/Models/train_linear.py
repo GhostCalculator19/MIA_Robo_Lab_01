@@ -59,6 +59,35 @@ def main() -> None:
     # Save model
     os.makedirs(config['models']['models_path'], exist_ok=True)
     joblib.dump(model, config['models']['models_path'] + "linear.pkl")
+    
+    # Predict (в лог-пространстве)
+    y_pred_log = model.predict(x_train)
+
+    # Возвращаем в исходное пространство
+    y_pred = np.expm1(y_pred_log)
+    y_true = y_train  # уже в оригинальном масштабе
+
+    # Метрики
+    rmse = root_mean_squared_error(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+
+    print(f"RMSE: {rmse}")
+    print(f"MAE: {mae}")
+    print(f"R2: {r2}")
+    
+    metrics = {
+    "train": {
+        "rmse": float(rmse),
+        "mae": float(mae),
+        "r2": float(r2)
+        }
+    }
+
+    os.makedirs("dvclive/linear", exist_ok=True)
+
+    with open("dvclive/linear/metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
 
 
 if __name__ == "__main__":

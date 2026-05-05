@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from train_utils import load_data
 from tensorboard.backend.event_processing import event_accumulator
 
+from sklearn.metrics import root_mean_squared_error, mean_absolute_error, r2_score
 
 class WeightsHistoryCallback(tf.keras.callbacks.Callback):
     def __init__(self):
@@ -170,6 +171,34 @@ def main() -> None:
     
     plot_weight_evolution(weights_history_cb.history, config["reports"]["figures_path"])
 
+    # Predict (в лог-пространстве)
+    y_pred_log = model.predict(x_train)
+
+    # Возвращаем в исходное пространство
+    y_pred = np.expm1(y_pred_log)
+    y_true = y_train  # уже в оригинальном масштабе
+
+    # Метрики
+    rmse = root_mean_squared_error(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+
+    print(f"RMSE: {rmse}")
+    print(f"MAE: {mae}")
+    print(f"R2: {r2}")
+    
+    metrics = {
+    "train": {
+        "rmse": float(rmse),
+        "mae": float(mae),
+        "r2": float(r2)
+        }
+    }
+
+    os.makedirs("dvclive/xgboost", exist_ok=True)
+
+    with open("dvclive/xgboost/metrics.json", "w") as f:
+        json.dump(metrics, f, indent=4)
 # Model Creation
 def create_ann_model(
     input_dim: int,
