@@ -158,6 +158,15 @@ stages:
 ![Alt text](/Reports/figures/catboost_feature_importance.png)
 
 # **4. Реализация XGBoost**
+**XGBoost** - оптимизированная реализация градиентного бустинга. в отличии от **CatBoost**, при построении каждого дерева XGBoost использует второй порядок производной (гессиан) функции потерь, что позволяет точнее находить направление оптимизации.
+Основные гиперпараметры XGBoost
+- n_estimators — число деревьев
+- learning_rate (eta) — шаг обучения
+- max_depth — глубина деревьев
+- subsample — доля данных
+- colsample_bytree — доля признаков
+- gamma — минимальное улучшение для сплита
+- lambda, alpha — L2/L1 регуляризация
 
 ![Alt text](/Reports/figures/xgboost_feature_importance.png)
 
