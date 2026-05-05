@@ -12,7 +12,24 @@ from dvclive import Live
 from sklearn.model_selection import train_test_split
 
 from train_utils import load_data
+from tensorboard.backend.event_processing import event_accumulator
 
+
+class WeightsHistoryCallback(tf.keras.callbacks.Callback):
+    def __init__(self):
+        super().__init__()
+        self.history = {}
+
+    def on_epoch_end(self, epoch, logs=None):
+        for layer in self.model.layers:
+            if hasattr(layer, "kernel"):
+                weights = layer.kernel.numpy().flatten()
+
+                if layer.name not in self.history:
+                    self.history[layer.name] = []
+
+                self.history[layer.name].append(weights)
+        
 def main() -> None:
 
     # Load configuration
@@ -46,14 +63,18 @@ def main() -> None:
 
     os.makedirs("logs/fit/", exist_ok=True)
     log_dir: str = "logs/fit/" + datetime.datetime.now().strftime("%H-%M-%S_%d-%m-%Y")
+    
     tensorboard_callback = tf.keras.callbacks.TensorBoard(
         log_dir=log_dir,
-        histogram_freq=1,
+        histogram_freq=1,          # гистограммы весов
         write_graph=True,
         write_images=True,
         update_freq="epoch",
-        profile_batch=0
+        profile_batch=0,
+        embeddings_freq=0
     )
+    
+    weights_history_cb = WeightsHistoryCallback()
 
     tf.summary.trace_on(graph=True, profiler=False)
 
@@ -63,7 +84,8 @@ def main() -> None:
     history = model.fit(
         train_ds,
         validation_data=val_ds,
-        callbacks=[tensorboard_callback],
+        callbacks=[tensorboard_callback, weights_history_cb
+                   ],
         epochs=train_params["epochs"],
         verbose=train_params["verbose"]
     )
@@ -120,10 +142,33 @@ def main() -> None:
 
         writer.flush()
 
+    # --- TensorBoard Scalars (дублируем для удобства выгрузки) ---
+    writer = tf.summary.create_file_writer(log_dir)
+
+    with writer.as_default():
+        for epoch in range(len(history.history["loss"])):
+            tf.summary.scalar("Loss/train", history.history["loss"][epoch], step=epoch)
+            tf.summary.scalar("Loss/val", history.history["val_loss"][epoch], step=epoch)
+
+            tf.summary.scalar("RMSE/train", history.history["rmse"][epoch], step=epoch)
+            tf.summary.scalar("RMSE/val", history.history["val_rmse"][epoch], step=epoch)
+
+            tf.summary.scalar("MAE/train", history.history["mae"][epoch], step=epoch)
+            tf.summary.scalar("MAE/val", history.history["val_mae"][epoch], step=epoch)
+
+            tf.summary.scalar("R2/train", history.history["r2_score"][epoch], step=epoch)
+            tf.summary.scalar("R2/val", history.history["val_r2_score"][epoch], step=epoch)
+
+        writer.flush()
+
     # Save Model
     os.makedirs(config["models"]["models_path"], exist_ok=True)
     model.save(config["models"]["models_path"] + "ann.keras")
+    
+    export_tb_scalars(log_dir=log_dir, save_dir=config["reports"]["figures_path"] + "tensorboard/")
 
+    
+    plot_weight_evolution(weights_history_cb.history, config["reports"]["figures_path"])
 
 # Model Creation
 def create_ann_model(
@@ -198,6 +243,56 @@ def create_tf_dataset(
               .prefetch(tf.data.AUTOTUNE))
 
     return train_ds, val_ds
+
+
+
+def export_tb_scalars(log_dir, save_dir):
+    os.makedirs(save_dir, exist_ok=True)
+
+    ea = event_accumulator.EventAccumulator(log_dir)
+    ea.Reload()
+
+    tags = ea.Tags()["scalars"]
+
+    for tag in tags:
+        events = ea.Scalars(tag)
+
+        steps = [e.step for e in events]
+        values = [e.value for e in events]
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(steps, values)
+        plt.title(tag)
+        plt.xlabel("Step")
+        plt.ylabel(tag)
+        plt.grid()
+
+        filename = tag.replace("/", "_") + ".png"
+        plt.savefig(os.path.join(save_dir, filename))
+        plt.close()
+
+def plot_weight_evolution(weights_history, save_path):
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    for layer_name, epochs_weights in weights_history.items():
+
+        plt.figure(figsize=(10, 6))
+
+        for i, weights in enumerate(epochs_weights):
+            hist, bins = np.histogram(weights, bins=50, density=True)
+            centers = (bins[:-1] + bins[1:]) / 2
+
+            # смещение по оси Y (эпохи)
+            plt.plot(centers, hist + i * 0.02, alpha=0.6)
+
+        plt.title(f"{layer_name} Weight Distribution Evolution")
+        plt.xlabel("Weight value")
+        plt.ylabel("Epoch (stacked)")
+        plt.grid()
+
+        plt.savefig(f"{save_path}/{layer_name}_evolution.png", dpi=300)
+        plt.close()
 
 if __name__ == "__main__":
     main()
