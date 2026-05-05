@@ -229,7 +229,8 @@ stages:
 ![Alt text](/Data/Images/Comparative_table_metrics.png)
 
 **Сравнение метрик тестировующей и обучающей выборки каждой модели**
-![Alt text](/Data/Images/Metrics_each_model.png)
+![Alt text](/Data/Images/Metrics_each_mode.png)
+
 
 
 # **Выводы**
