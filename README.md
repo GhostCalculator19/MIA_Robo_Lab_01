@@ -90,3 +90,38 @@ EDA была выполнена в виде Jupyter Note, представлен
 
 
 
+
+stages:
+  
+  preprocess:
+    cmd: python Src/Data/Make_dataset.py
+    deps:
+    - Data/Raw/test_scores.csv
+    - Src/Data/Make_dataset.py
+    params:
+    - Config/paramts.yaml:
+      - base
+      - data
+    outs:
+    - Data/Processed/train.csv
+    - Data/Processed/test.csv
+    - Data/Processed/data_x.npy
+    - Data/Processed/data_y.npy
+    - Data/Processed/test_scores_processed.csv
+
+  # ================================ Train stages ================================
+  train_linear:
+    cmd: python Src/Models/train_linear.py
+    deps:
+    - Data/Processed/train.csv
+    - Src/Models/train_linear.py
+    - Src/Models/train_utils.py
+    params:
+    - Config/paramts.yaml:
+      - base
+      - models.linear
+    outs:
+    - models/linear.pkl
+    - Reports/Figures/linear_coefficients.png
+    - Reports/linear_coefficients.json
+
