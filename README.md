@@ -53,3 +53,6 @@ test_scores.csv <br/>
 # Ход работы
 
 # **I - EDA - Explanatory Data Analysis (Разведочный анализ данных)**
+
+EDA была выполнена в виде Jupyter Note, представлена в [EDA](../NoteBook/EDA.ipynb)
+
