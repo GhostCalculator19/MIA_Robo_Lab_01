@@ -89,39 +89,29 @@ EDA была выполнена в виде Jupyter Note, представлен
 - средняя положительная корреляция признаков "pretest" и "posttest" относительтно "lunch (обед)", что показывает как питание связано с успеваемостью :sweat_smile:
 
 
+# II - Построение пайплайна (DVC) и обучение моделей
 
+на данном этапе был создан файл [paramts.yaml](/Config/paramts.yaml), для настройки гиперпараметров моделей и также был создан файл [dvc.yaml](/dvc.yaml), имеющий структуру пайплайна для всех моделей.
 
+Общая структура пайплайна DVC
+
+```
+python
 stages:
-  
-  preprocess:
-    cmd: python Src/Data/Make_dataset.py
-    deps:
-    - Data/Raw/test_scores.csv
-    - Src/Data/Make_dataset.py
-    params:
-    - Config/paramts.yaml:
-      - base
-      - data
-    outs:
-    - Data/Processed/train.csv
-    - Data/Processed/test.csv
-    - Data/Processed/data_x.npy
-    - Data/Processed/data_y.npy
-    - Data/Processed/test_scores_processed.csv
 
+  # ================================ Prepare stage ================================
+  preprocess:
+    cmd: 
+    deps:
+    params:
+    outs:
+  
   # ================================ Train stages ================================
   train_linear:
-    cmd: python Src/Models/train_linear.py
+    cmd: 
     deps:
-    - Data/Processed/train.csv
-    - Src/Models/train_linear.py
-    - Src/Models/train_utils.py
     params:
-    - Config/paramts.yaml:
-      - base
-      - models.linear
     outs:
-    - models/linear.pkl
-    - Reports/Figures/linear_coefficients.png
-    - Reports/linear_coefficients.json
+    
 
+```
