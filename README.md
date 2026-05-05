@@ -205,6 +205,10 @@ stages:
 
 <img src="/Reports/figures/ann_model_graph.png" alt="Alt text" width="500">
 
+Также были сгенерованы графики из TensorBoard, показывающие изменение распределения весов во время (эпохи) обучения для каждого слоя.
+<img src="/Data/Images/ANN_hist_epochs_dense.png" alt="Alt text" width="500">
+
+
 > [!IMPORTANT]
 > - На входе есть 9 признаков
 > - Количество скрытых слоя - 4
