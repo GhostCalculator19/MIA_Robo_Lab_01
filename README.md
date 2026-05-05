@@ -96,7 +96,7 @@ EDA была выполнена в виде Jupyter Note, представлен
 Общая структура пайплайна DVC
 
 ```
-python
+yaml
 stages:
 
   # ================================ Prepare stage ================================
@@ -107,11 +107,18 @@ stages:
     outs:
   
   # ================================ Train stages ================================
-  train_linear:
+  train_model:
     cmd: 
     deps:
     params:
     outs:
-    
+
+  # ================================ Test stages ================================
+     test_model:
+    cmd: 
+    deps:
+    params:
+    metrics:
+    plots:
 
 ```
